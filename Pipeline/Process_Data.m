@@ -32,28 +32,83 @@ end
 %%% Getting Force plate information
 for i=1:length(ForceplateNum)
     %%% ForcePlate will nclude 4 corners of each force plate, First point is top left and it goes CW.
-    ForcePlate{i}=data.fp_data.FP_data(ForceplateNum(i)).corners'*RMatrix;
+    if length(data.fp_data.FP_data)==5
+        ForcePlate{i}=data.fp_data.FP_data(ForceplateNum(i)).corners'*RMatrix;
+    else
+        ForcePlate{i}=data.fp_data.FP_data(i).corners'*RMatrix;
+    end
 end
 %%%
 if ForceFlag
-    if strcmp(data.fp_data.Info(1).units.Moment_Mx1,'Nmm')
-        p_sc = 1000;
-        %     data.fp_data.Info(:).units.Moment_Mx1 = 'Nm';
-    else
-        p_sc = 1;
+    if length(data.fp_data.FP_data)==5
+        if ForceplateNum(1)==1
+            if strcmp(data.fp_data.Info(1).units.Moment_Mx1,'Nmm')
+                p_sc = 1000;
+            else
+                p_sc = 1;
+            end
+        elseif ForceplateNum(1)==2
+            if strcmp(data.fp_data.Info(2).units.Moment_Mx2,'Nmm')
+                p_sc = 1000;
+            else
+                p_sc = 1;
+            end
+        elseif ForceplateNum(1)==3
+            if strcmp(data.fp_data.Info(3).units.Moment_Mx3,'Nmm')
+                p_sc = 1000;
+            else
+                p_sc = 1;
+            end
+        elseif ForceplateNum(1)==4
+            if strcmp(data.fp_data.Info(4).units.Moment_Mx4,'Nmm')
+                p_sc = 1000;
+            else
+                p_sc = 1;
+            end
+        elseif ForceplateNum(1)==5
+            if strcmp(data.fp_data.Info(5).units.Moment_Mx5,'Nmm')
+                p_sc = 1000;
+            else
+                p_sc = 1;
+            end
+        end
+    elseif length(data.fp_data.FP_data)==3
+        if strcmp(data.fp_data.Info(1).units.Moment_Mx1,'Nmm')
+            p_sc = 1000;
+            %     data.fp_data.Info(:).units.Moment_Mx1 = 'Nm';
+        else
+            p_sc = 1;
+        end
+    elseif length(data.fp_data.FP_data)==2
+        if strcmp(data.fp_data.Info(1).units.Moment_Mx4,'Nmm')
+            p_sc = 1000;
+            %     data.fp_data.Info(:).units.Moment_Mx1 = 'Nm';
+        else
+            p_sc = 1;
+        end
     end
-    
+        
     fp_Number=ForceplateNum;
     GRFdata =data.fp_data.Time;
     for i = 1:length(fp_Number)
-        GRFdata =  [GRFdata [data.fp_data.GRF_data(fp_Number(i)).F*RMatrix]];
-        GRFdata =  [GRFdata [data.fp_data.GRF_data(fp_Number(i)).P*RMatrix]/p_sc];
-        GRFdata =  [GRFdata [data.fp_data.GRF_data(fp_Number(i)).M*RMatrix]/p_sc];
+        if length(fp_Number)==5
+            GRFdata =  [GRFdata [data.fp_data.GRF_data(fp_Number(i)).F*RMatrix]];
+            GRFdata =  [GRFdata [data.fp_data.GRF_data(fp_Number(i)).P*RMatrix]/p_sc];
+            GRFdata =  [GRFdata [data.fp_data.GRF_data(fp_Number(i)).M*RMatrix]/p_sc];
+        else
+            GRFdata =  [GRFdata [data.fp_data.GRF_data(i).F*RMatrix]];
+            GRFdata =  [GRFdata [data.fp_data.GRF_data(i).P*RMatrix]/p_sc];
+            GRFdata =  [GRFdata [data.fp_data.GRF_data(i).M*RMatrix]/p_sc];
+        end
     end
     
     %% Separates ground reaction forces onto each foot
     switch ForceComFlage
         case 2
+            if ForcePlate{1}(1,1) < ForcePlate{2}(1,1) %case where force plate 4 is behind force plate 5
+                tempgrf=[GRFdata(:,1) GRFdata(:,11:19) GRFdata(:,2:10)];
+                GRFdata=tempgrf;
+            end
             sGRFdata=TM_SeparateGRF(MarkerData,GRFdata,Markerset);
             data.fp_data.Info(1).fp_Number=[4,5];
         case 1

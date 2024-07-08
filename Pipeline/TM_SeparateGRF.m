@@ -23,7 +23,7 @@ for i=1:length(GRFdata) %finds first heel strike
             a=1;
         end
     elseif a==1
-        if GRFdata(i,3)>20
+        if GRFdata(i,3)>50
             initialstrike=i;
             a=2;
         end
