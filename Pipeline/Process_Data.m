@@ -109,7 +109,7 @@ if ForceFlag
                 tempgrf=[GRFdata(:,1) GRFdata(:,11:19) GRFdata(:,2:10)];
                 GRFdata=tempgrf;
             end
-            sGRFdata=TM_SeparateGRF(MarkerData,GRFdata,Markerset);
+            sGRFdata=TM_SeparateGRFs(MarkerData,GRFdata,Markerset);
             data.fp_data.Info(1).fp_Number=[4,5];
         case 1
             sGRFdata=OG_SeparateGRF(MarkerData,GRFdata,Markerset,ForceplateNum,ForcePlate);
