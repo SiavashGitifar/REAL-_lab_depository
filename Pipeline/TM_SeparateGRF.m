@@ -1,7 +1,7 @@
 function [sGRFdata] = TM_SeparateGRF(MarkerData,GRFdata,Markerset)
 %SeparateGRF function separate ground reaction force data into forces onto
 %each foot
-SRR=(Markerset(2,1)-Markerset(1,1))./(GRFData(2,1)-GRFData(1,1));
+SRR=(MarkerData(2,1)-MarkerData(1,1))./(GRFdata(2,1)-GRFdata(1,1));
 %Identifies RTOE, RCAL, LTOE, and LCAL data columns
 for i=1:length(Markerset)
     if strcmp(Markerset(i),{'RCAL'})
